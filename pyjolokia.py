@@ -132,11 +132,12 @@ class Jolokia:
                 request.add_header("Authorization", authheader)
 
             responseStream = urlopen(request, timeout=self.timeout)
-            jsonData = responseStream.read()
+            try:
+                jsonData = responseStream.read()
+            finally:
+                responseStream.close()
         except Exception as e:
             raise JolokiaError('Could not connect. Got error %s' % (e))
-        finally:
-            responseStream.close()
 
         try:
             pythonDict = json.loads(jsonData.decode())
